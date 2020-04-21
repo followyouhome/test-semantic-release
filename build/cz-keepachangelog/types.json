@@ -1,0 +1,28 @@
+{
+  "types": {
+    "added": {
+      "description": "for new features",
+      "title": "Added"
+    },
+    "changed": {
+      "description": "for changes in existing functionality",
+      "title": "Changed"
+    },
+    "deprecated": {
+      "description": "for soon-to-be removed features",
+      "title": "Deprecated"
+    },
+    "removed": {
+      "description": "for now removed features",
+      "title": "Removed"
+    },
+    "fixed": {
+      "description": "for any bug fixes",
+      "title": "Fixed"
+    },
+    "security": {
+      "description": "in case of vulnerabilities",
+      "title": "Security"
+    }
+  }
+}

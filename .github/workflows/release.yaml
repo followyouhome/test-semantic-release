@@ -1,0 +1,42 @@
+name: Semantic release
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v1
+
+      - name: Find current Pull Request
+        uses: jwalton/gh-find-current-pr@v1
+        id: pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Generate changelog
+        run: |
+          echo "Detected Pull Request: #${PR_ID}: ${PR_TITLE}"
+          echo -e "$(echo $(echo ${PR_BODY} | grep -o -P '(?<=---).*(?=---)'))\n$(cat CHANGELOG.md)" > CHANGELOG.md
+          sed -i -e 's/\r/\n/g' CHANGELOG.md 
+        if: success() && steps.pr.outputs.pr
+        env:
+          PR_TITLE: ${{ steps.pr.outputs.title }}
+          PR_BODY: ${{ steps.pr.outputs.body }}
+          PR_ID: ${{ steps.pr.outputs.pr }}
+
+      - name: Semantic release
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          semantic_version: 17
